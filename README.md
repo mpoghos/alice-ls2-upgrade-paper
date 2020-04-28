@@ -4,7 +4,7 @@
 
 * Clone the repository
   ```
-  git clone https://gitlab.cern.ch/alice-upgrades/alice-ls2-upgrade-paper.git
+  git clone https://<user>@gitlab.cern.ch/alice-upgrades/alice-ls2-upgrade-paper.git
   ```
   or using ssh and key-based autentication:
   ```
@@ -18,4 +18,7 @@
 ## Directory layout
 
 * tex-files go to `src/`
-* figures and plots go to `fig/`
+* figures and plots go to `fig/`, include them as:
+  ```latex
+  \includegraphics[width=.5\textwidth]{<det>/<filename>}
+  ```

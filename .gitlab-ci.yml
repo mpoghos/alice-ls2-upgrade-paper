@@ -1,0 +1,8 @@
+pdf:
+  image: gitlab-registry.cern.ch/alice-upgrades/alice-ls2-upgrade-paper:alice-upgrades-ubuntu20.04
+  script:
+    - latexmk
+  artifacts:
+    paths:
+    - build/main.pdf
+    expire_in: 1 week
