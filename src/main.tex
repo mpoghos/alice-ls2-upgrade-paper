@@ -1,0 +1,107 @@
+\documentclass[ALICE,manyauthors]{cernphprep}
+\usepackage[comma,square,numbers,sort&compress]{natbib}
+\usepackage{hyperref}
+\usepackage{lineno}
+\usepackage{xspace}
+\usepackage{siunitx}
+\sisetup{binary-units=true}
+\sisetup{load-configurations = abbreviations}
+\linenumbers
+
+\input{commands.tex}
+
+\begin{document}
+
+\begin{titlepage}
+% the dates below correspond to CERN approval
+% please don't touch: EB chairs will take care
+\PHyear{XXXX}       % required, will be obtained from CERN
+\PHnumber{XXX}      % required, will be obtained from CERN
+\PHdate{Day Month}  % required, will be obtained from CERN
+
+%%% Put your own title + short title here:
+\title{ALICE upgrades during the LHC long-shutdown 2}
+\ShortTitle{ALICE LS2 upgrades}   % appears on left page headers
+
+%%% Do not change the next lines
+\Collaboration{ALICE Collaboration\thanks{See Appendix~\ref{app:collab} for the list of collaboration members}}
+\ShortAuthor{ALICE Collaboration} % appears on right page headers, do not change
+
+\begin{abstract}
+In this article, we discuss the ALICE upgrades during the LHC long-shutdown 2.
+\end{abstract}
+\end{titlepage}
+
+\setcounter{page}{2} %please do not remove this line
+
+\tableofcontents
+\listoffigures
+
+We should follow the EB guidelines~\cite{EBGuidelineEditing}.
+
+\include{intro}
+
+\include{concept}
+
+\section{common (chip) developments}
+\subsection{ALPIDE}
+\subsection{SAMPA}
+
+\section{detector upgrades}
+(aim for similar substructure for all detectors)
+\subsection{ITS}
+\subsection{MFT}
+\subsection{TPC}
+\subsection{FIT}
+\subsection{Muon System}
+\subsection{TRD}
+\subsection{TOF}
+\subsection{HMPID}
+\subsection{EMCal}
+\subsection{PHOS}
+
+\section{Beampipe, support structures, detector alignment, installation and maintenance}
+
+\section{read-out and data processing}
+\subsection{O2 Overview: reconstruction workflow (PDP)}
+(TF structure, …)
+\subsection{CTP}
+\subsection{CRU}
+\subsection{FLP}
+\subsection{EPN (hardware/infra)}
+\subsection{Grid computing / Offline computing infrastructure}
+
+\section{conclusions}
+\subsection{prospects for Run 3 + 4 (expected performance)}
+
+\cleardoublepage
+%%%%% acknowledgements - handled by EB chairs
+\newenvironment{acknowledgement}{\relax}{\relax}
+\begin{acknowledgement}
+\section*{Acknowledgements}
+% add specific acknowledgements here
+% ...but please don't remove the line below: funding agencies
+% will be acknowledged with a custom tex file handled by EB chairs after Collab Round 2
+%\input{acknowledgements.tex}
+\end{acknowledgement}
+
+%%%%%%%% Bibliography
+\bibliographystyle{utphys}   % Remember we use title in the biblio
+\bibliography{bibliography}
+%\input {bibliography.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Appendices: yours (if any) + authorlist
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+
+%
+%\input{} % put your appendices here (if any)
+%
+
+%%%%% Authorlist - please do not touch: handled by EB chairs
+\section{The ALICE Collaboration}
+\label{app:collab}
+%\input{authorlist-preprint.tex}
+\end{document}
