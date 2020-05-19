@@ -20,7 +20,7 @@ Latest version (link to pdf): [![build status](https://gitlab.cern.ch/alice-upgr
 * Iterate
    * Edit (do not worry too much about layout, this will be taken care of in the end)
    * Commit and push changes to your fork
-* Open a Merge Request to the main repository
+* Once you have reached a satisfactory level of maturity, open a Merge Request to the main repository.
 
 ## Directory layout
 
