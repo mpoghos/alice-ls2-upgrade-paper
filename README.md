@@ -1,5 +1,7 @@
 # ALICE LS2 upgrade paper
 
+Latest version (link to pdf): [![build status](https://gitlab.cern.ch/alice-upgrades/alice-ls2-upgrade-paper/badges/master/pipeline.svg)](https://gitlab.cern.ch/alice-upgrades/alice-ls2-upgrade-paper/-/jobs/artifacts/master/raw/build/main.pdf?job=pdf)
+
 ## Getting started
 
 * [Fork the repository](https://gitlab.cern.ch/alice-upgrades/alice-ls2-upgrade-paper/-/forks/new)
