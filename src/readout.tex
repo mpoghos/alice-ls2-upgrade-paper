@@ -1,13 +1,17 @@
 \section{Read-out and data processing (20p.)}
 %\subsection{O2 Overview: reconstruction workflow (PDP) (Andreas; 5 p.)}
 \subsection{${\rm O}^2$ and Data Processing Overview}
-The continuous rad-out of the large majority of the detectors, is one of the most important changes with respect to Run1/2.
+In this section we give an overview of data processing from the detector read-out to the creation of analysis object data (see Fig. \ref{fig:02dp})
+and then
+focus on the processing steps that are synchronous with data taking.
+The continuous read-out of the large majority of the detectors, is one of the most important changes with respect to Run1/2.
 At the projected peak Pb--Pb interaction rate of 50~kHz the data throughput from the 
 detectors is expected to be 3.75~TB/s, approximately a factor of 50 higher than during Run 2.
 In order to minimize the costs and compute time of the offline system for data 
 processing and storage, the ALICE Computing Model for Runs 3 and 4 is designed 
 for a maximum reduction of the data volume synchronous with the data taking and without rejecting events. 
-This task is achieved in two processing steps on the ALICE online/offline facility (${\rm O}^2$) located at Point2. It consists of two types of compute nodes, the First Level Processors (FLP) located in the 
+This task is achieved in two processing steps on the ALICE online/offline facility (${\rm O}^2$) located at Point2.
+It consists of two types of compute nodes, the First Level Processors (FLP) located in the 
 experiment access shaft (CR1) and the Event Processing Nodes (EPN) at CR0. In addition to the compute 
 nodes it provides networking, data storage as well as interfaces with the Grid and the permanent data 
 store at the Tier
@@ -27,6 +31,17 @@ Moreover, HBFs are accumulated into sub time frames (STF) of about 11-22~ms leng
 containing $\approx 550-1100$ collisions. A dedicated FLP collects and processes data from the Detector 
 Control System (DCS).
 The STFs are then dispatched to the Event Processing Nodes (EPN). 
+
+\begin{figure*}[hbtp]
+  \begin{center}
+    \vspace*{10cm}
+  %\includegraphics[width=.5\textwidth]{<det>/<filename>}
+ \end{center}
+ \caption{O2 Data Processing Overview}
+ \label{fig:o2dp}
+ \end{figure*}
+
+\subsubsection{Synchronous Reconstruction}
 
 STFs related to the same time period and from all FLPs are received by the same EPN and aggregated into 
 a complete time frame (TF).
@@ -56,7 +71,7 @@ consists of three main components.
 The {\it Transport Layer} is implemented using the FairMQ message 
 passing toolkit. It enables efficient parallelism by providing 
 abstraction of network and inter process communication as well as 
-by supporting shared memory backed message passing. The {O2 Data 
+by supporting shared memory backed message passing. The {\it O2 Data 
 Model} is message passing aware and provides support for various 
 backends such as a performance optimized simplifies 0-copy format, ROOT based serialisation and Apache Arrow for analysis and and 
 integration with external tools. Finally, the {\it Data Processing
@@ -64,7 +79,8 @@ Layer} (DPL) abstracts computation as a set of data processors
 organized in a logical dataflow explaining of data is transformed.
 
 \begin{figure*}[hbtp]
- \begin{center}
+  \begin{center}
+    \vspace*{10cm}
   %\includegraphics[width=.5\textwidth]{<det>/<filename>}
  \end{center}
  \caption{Synchronous Reconstruction Workflow}
@@ -75,8 +91,9 @@ A schematic representation of the synchronous reconstruction workflow is shown i
 The main objective of synchronous processing is to reduce the data rate from the TPC which is with 90\%
 the dominant contributor. This is achieved by performing clustering and full track reconstruction in the
 TPC. Hits not attached to physical tracks are removed from the data. Moreover, cluster space point 
-coordinates are stored as relative coordinates, thus reducing the entropy and rendering entropy encoding
-more efficient. In addition, detector calibration information is extracted replacing the additional 
+coordinates are stored as relative coordinates, thus reducing the entropy and allowing for very efficient entropy
+encoding of the data.
+In addition, detector calibration information is extracted replacing the additional 
 calibration passes in front of the production reconstruction passes needed in Run1/2. TPC space charge 
 distortion calibration uses the information of fully reconstructed barrel tracks including ITS, TOF and
 TRD information. However, only a small fraction of all tracks are need to be reconstructed to gain 
@@ -90,7 +107,7 @@ TPC reconstruction starts with the cluster finding. It is followed by tracking c
 finding, track merging and fitting steps. These require a first order (average) space charge distortion
 correction (see below). Two options for TPC data rejection are supported by the software. In the first 
 option (A) clusters of identified background clusters (for example from noisy pads or charge clouds 
-related to low momentum protons) and background tracks, such as very low momentum tracks, loopers and 
+related to low momentum protons) and clusters associated to background tracks, such as very low momentum tracks, loopers and 
 tracks with large inclination angle, are rejected.  For the second option (B) only clusters attached or
 in the proximity of identified signal tracks are kept.
 The estimated rejection fractions for options A and B are $12.5-39.1\%$ and $37-53\%$, respectively. 
@@ -114,7 +131,8 @@ GPU hardware. This opens the possibility to run reconstruction efficiently on he
 computing platforms that will become available on the GRID:
 
 \subsubsection*{\bf CPU Processing}
-For ITS and the muon spectrometer system (MFT, MCH, MID) synchronous processing starts with space point reconstruction (clustering). For the barrel calorimeters EMCAL and PHOS, the cell properties (time, amplitude) are determined by fitting the raw time distributions. Clusterization is performed in order to select cells to write to the CTF, while final clustering will be performed in the asynchronous reconstruction passes. Data for time calibration and dead-channel maps are extracted. For FT0, th the reconstruction of collision time and vertex z-position is performed.
+Data processing on CPUs is performed in parallel on about 30 cores.
+For ITS and the muon spectrometer system (MFT, MCH, MID) processing starts with space point reconstruction (clustering). For the barrel calorimeters EMCAL and PHOS, the cell properties (time, amplitude) are determined by fitting the raw time distributions. Clusterization is performed in order to select cells to write to the CTF, while final clustering will be performed in the asynchronous reconstruction passes. Data for time calibration and dead-channel maps are extracted. For FT0, th the reconstruction of collision time and vertex z-position is performed.
 
 For about 1\% of the tracks (5\% of the tracks in the 20\% most peripheral
 collisions) full tracking including all 
