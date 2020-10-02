@@ -196,9 +196,104 @@ Asymmetric Numeral System coders, which allows to reach the entropy limit.
 \subsection{FLP (Pierre; 3p.)}
 \input{o2_flp}
 \subsection{EPN (Volker; 3p.)}
-\newpage
-\subsection{Grid computing}
 
+The EPN data center is designed to perform a first online data reconstruction pass, extract detector calibration objects, and reduce the data volume to a reasonable size in order to fit into the available storage space. 
+The compression algorithms rely on data reconstruction properties, and the subsequent asynchronous reconstruction passes rely on the calibration objects.
+During periods when data is not being collected the EPN farm, in addition to other resources, will be used for the asynchronous re-processing of the data and will contribute compute resources to the physics analysis of the previously recorded data.
+
+\subsubsection{EPN Data Center}
+
+Due to the increased Run 3 compute and the resulting space and cooling requirements, specified in the O2 technical design report for Run 3 \cite{Buncic:2011297} a new data center for the EPN farm was built on the surface at Point 2 of the LHC, close to the ALICE Experiment. 
+The new EPN data center consists of 4 IT Modules and one infrastructure module (pictured in Fig. ~\ref{fig:containers}). 
+Each IT Module has a cooling capacity of 525 kW and allows for power densities up to 1 kW IT load per rack unit. 
+This design allows for the use of highly integrated servers, with multiple GPUs in the farm. 
+The initial planning envisioned the option of having enough space to also provide a large disk buffer of 60 PB, close to the ALICE Experiment. However, this aspect of the storage space was moved to the Meyrin Data Center of Cern IT.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.70\textwidth]{readout/epn/containers.png}
+\caption{The ALICE CR0 data center}
+\label{fig:containers}
+\end{figure}
+
+During data taking, the EPN farm will receive up to $\sim$600 GB/s from the FLP farm.
+This data rate will then need to be reduced to $\sim$100 GB/s in real time, in order to write the data to the final storage space.
+The EPN farm is connected to the FLPs via a fast InfiniBand HDR network with a total throughput of 14.4 Tbit/s. 
+Towards the disk buffer in the CERN IT data center the connectivity is realized via a 100 G Ethernet with a total bandwidth of 1Tbit/s redundantly.  
+
+The EPN farm will consist of 250 EPN servers, which will provide the necessary compute power for the synchronous Run 3 data processing. 
+A 4U Supermicro GPU server was chosen for its capability to house 8 double-width GPUs as well an InfiniBand HDR host adapter. 
+The servers will be equipped with two 32 core AMD Rome CPUs (PSE-ROM7452-0057) with 512 GB DDR4-3200 RAM, eight AMD MI50 GPUs with 32 GB Memory, a 1 TB NVMe disk, along with an InfiniBand HDR HCA, which will be operated at 100 G.
+
+\subsubsection{O2 Data Distribution}
+
+The data flow from the FLP to EPN starts with the CRU performing DMA transfers of the detector data into the memory of the FLP. 
+The CRU DMA region is mapped as a shared memory region, which allows efficient intra-node communication of data, removing the need for CPU copies, and enables the sharing of the buffers utilizing the InfiniBand network interface. 
+Data corresponding to the configured number of heartbeat frames (HBF), up to 256, is aggregated across all FLPs into sub time frame (STF) objects. 
+Additionally, a fraction of the detectors perform the first stage of data compression on the FLPs. 
+Corresponding STF objects from all FLPs are then aggregated on a single EPN node, forming the time frame (TF), which is the input for synchronous reconstruction.
+
+\paragraph{O2 Data Distribution Network}
+
+By far the largest data bandwidth requirement in the O2 network comes from the directed readout data stream from FLPs to EPNs. 
+As the data moves from all FLPs to a single EPN node, as mandated by synchronous processing, the flow must be actively regulated to avoid any points of congestion.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{readout/epn/ALICE_network_diagram02.png}
+\caption{Network diagram of the Run 3 O2 facility}
+\label{fig:alice_network}
+\end{figure}
+
+The network diagram of the entire O2 facility is shown in Fig. ~\ref{fig:alice_network}.
+To satisfy individual FLP data rates of about 40 Gb/s, which can vary from FLP to FLP depending on the connected sub-detector, a 100 Gb/s InfiniBand network interface is chosen. 
+The same interface is used for EPN nodes. 
+The architecture of the InfiniBand network is implemented using a two-level folded-Clos network, often referred to as a fat tree. 
+The network is built using 40 port switches for both core and top-of-the-rack (ToR) level switches. 
+Two nodes interface at 100 Gb/s using a single switch port utilizing copper splitter cables. 
+The core of the network is implemented using fiber optic cables operating at 200 Gb/s. 
+Following the requirements, the network fabric features non-blocking communication from FLPs to EPNs, but implements a high blocking ratio within individual EPN and FLP sub-segments, where the bandwidth is not required. 
+Additionally, the InfiniBand to Ethernet gateway systems provides the required throughput for storage and other services.
+
+\paragraph{O2 Data Distribution Software}
+
+The ALICE experiment implements a new, continuous readout scheme where the full online reconstruction is performed during the data acquisition. 
+The data stream from the detectors is grouped into time frames, where one particular TF is processed on a single dedicated processing node (EPN). 
+The detector data arrives into the cluster of 200 input nodes (FLP). 
+There is only limited parallel processing performed for the processing of a time slice and that is done on a single node for efficiency reasons.
+
+This scheme requires the data, arriving at the rate of terabits per second, to be routed for each TF to one particular EPN node which is available for processing. 
+This many-to-one scenario only works if the data is actively routed to nodes capable of receiving and processing the new TFs.
+This scheme calls for a data distribution and scheduling framework, which orchestrates the sending nodes to distribute their individual STF slices to the appropriate EPNs. 
+Within this structure, all FLPs send each new STF to a designated processing node. 
+The scheduler implements a scheme, which guarantees that eventually all TF fragments from all senders belonging to one particular time slice are being sent to the appropriate, dedicated processing node.
+
+Given the large number of senders, such a scheme has to implement a deep pipeline. 
+The time slices do not have a constant size and therefore can fluctuate and, similarly, the processing time of a time slice is equally not a constant. 
+Therefore, the scheduler has to take such fluctuations into account. 
+There is a trade-off between the implementation of larger buffers on the processing nodes, allowing to average some of the fluctuations, and the overall latency of the time slice processing. 
+Further, the system has to be stable against failures, such as the crash of a processing job or failure of a processing node. 
+In such cases, the data loss is localized only to the TFs currently being processed by the affected process or node. 
+The system is able to accommodate changing processing requirements by allowing the addition or removal of EPNs into the ongoing data taking run. 
+This enables the use of processing nodes for offline processing during times when there is a low load on the online system. 
+Each EPN can either perform synchronous reconstruction, data taking, or asynchronous analysis.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{readout/epn/Alice_dd_software.png}
+\caption{Data distribution software}
+\label{fig:dd-software}
+\end{figure}
+
+Figure \ref{fig:dd-software} shows the main components of the developed data distribution system: sub time frame builder (StfBuilder) and sender (StfSender) on FLP nodes, time frame builder (TfBuilder) on EPN nodes, and time frame scheduler (TfScheduler) which orchestrates the data distribution components and regulates the data flow. 
+Detector data (HBFs) are transmitted to the StfBuilder, which publishes STF objects for the local processing and the quality control. 
+The StfSenders report the availability and information about STFs to the scheduler, which selects a suitable EPN node where the TF can be built, once all STF components are available. 
+Therefore, the scheduler must keeps track of the utilization of all EPNs and buffer states of sending nodes. 
+As several TFs are being built at the same time, due to the many-to-one traffic nature of TF aggregation, the scheduler must keep track of network fabric utilization to avoid creating congestion hotspots. 
+Once TfBuilders are given information about all the STFs, they fetch the data from FLPs using remote DMA (RDMA), decreasing the CPU utilization on both the sender and receiver side. 
+In the case when the data cannot be scheduled to any EPN, the StfSenders are instructed to drop the data in order to avoid creating back pressure.
+
+\subsection{Grid computing (Andreas; 3 p.)}
 \subsubsection{Asynchronous Reconstruction}
 Pb--Pb and pp data taking with synchronous reconstruction is followed by an about 4-6 weeks period during which the final calibration constants are evaluated. For some detectors this requires also a short calibration pass over CTF data before the full asynchronous production passes can start.
 
@@ -305,4 +400,3 @@ Sparks and many others. The compatibility with ROOT is guaranteed by using the T
 source which allows using Arrow with TDataFrame. Besides I/O efficiency the new data format
 naturally allows for optimized vectorized processing and declarative analysis.
 The frameworks API isolates many of the advanced features from the user and data access methods are similar to the ones used in the Run~1/2 framework. This facilitates porting of user analysis code into the new framework.
-~
