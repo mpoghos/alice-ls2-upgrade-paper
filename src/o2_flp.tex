@@ -42,7 +42,7 @@ The total nominal read-out performance amounts to 3.4~TB/s from the detector ele
 
 The server selected for the FLPs is the Dell Poweredge R740. The selection has been done after numerous hardware and software tests~\cite{ref_FLP} and a competitive tender. Each FLP is equipped with 96~GB of DDR memory and 2~CPUs. The CPUs are of two different flavours of the Intel Cascade Lake generation (the Silver 4210 or the Gold 6230 with 10 or 20 hardware cores respectively) depending on the processing needs of the detector. Each FLP hosts up to three CRUs, up to four CRORCs and one Infiniband network interface, each using one PCIe Gen3 x16 slot. The readout software performance allows data to be transferred from 3~CRUs simultaneously at the maximum PCIe Gen3 performance for a total of 330~Gb/s.
 
-The ﬁrst layer over the PCIe interface to the cards is the PDA (Portable Driver Architecture) UIO (Userspace IO) kernel module, developed by the Frankfurt Institute for Advanced Studies (FIAS)~\cite{ref_PDA}. PDA also provides a userspace library in C~\cite{ref_PDA_lib} which supports PCIe device enumeration and provides a handle to PCI devices.
+The first layer over the PCIe interface to the cards is the PDA (Portable Driver Architecture) UIO (Userspace IO) kernel module~\cite{ref_PDA}. PDA also provides a userspace library in C~\cite{ref_PDA_lib} which supports PCIe device enumeration and provides a handle to PCI devices.
 The read-out software includes the readout program and the readoutCard library~\cite{ref_readout} which orchestrate the simultaneous data transfers from the GBT links to the FLP memory and from the memory to the network interface as shown in Fig.\ref{fig_RO}. 
 %
 \begin{figure}[!h]
@@ -79,14 +79,24 @@ The $O^2$  QC system \cite{ref_QC} is a distributed software as shown in Fig.\re
 %>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> WebUI
 \paragraph {Web User Interface framework}
 Overview
-The Web User Interface (Web UI) framework provides the core functionalities and building blocks to easily create rich web application for the ALICE O2 project.
-The server side features REST and WebSocket API, the authentication via CERN signle sign-on and the authorisation using CERN e-groups.
-The client-side features user interface Cascading Style Sheet building blocks in accordance with ALICE standards, asynchronous data fetching (Ajax) and bi-directional socket (WebSockets).
+The Web User Interface (Web UI) framework provides the core functionalities and building blocks to easily create rich web applications.
+The server side features REST and WebSocket API, the authentication via CERN single sign-on and the authorisation using CERN e-groups.
+The client-side features user interface Cascading Style Sheet building blocks, asynchronous data fetching (Ajax) and bi-directional socket (WebSockets).
 
 %>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Control and configuration 
 %
 \paragraph{Control and configuration}
-The ALICE Experiment Control System (AliECS) \cite{ref_aliecs} integrates the experiment control and configuration, the FLP farm control and a high-level control interface to the $O^2$/EPN cluster as shown in Fig~\ref{fig_aliecs}. It implements a distributed state machine to represent the aggregated state of the constituent $O^2$ processes of a data-driven workﬂow. Furthermore, it allows reconﬁguration of running processes and simultaneous operation of multiple workﬂows, with easy reallocation of resources among workﬂows. Finally, it reacts promptly to inputs, handling events from the user, the LHC, the trigger system, the DCS, and the cluster itself with a high degree of autonomy. FairMQ is the part of ALFA \cite{ref_alfa} and provides the common $O^2$ transport layer for physics data. TBD: new sentence from Teo about Mesos as cluster management system + a brief mentioning of Consul for configuration.
+The ALICE Experiment Control System (AliECS) \cite{ref_aliecs} integrates the experiment control and configuration, the FLP farm control and a high-level control interface to the $O^2$/EPN cluster as shown in Fig~\ref{fig_aliecs}. It implements a distributed state machine to represent the aggregated state of the constituent $O^2$ processes of a data-driven workﬂow. Furthermore, it allows reconﬁguration of running processes and simultaneous operation of multiple worflows, with easy reallocation of resources among workflows. Finally, it reacts promptly to inputs, handling events from the user, the LHC, the trigger system, the DCS, and the cluster itself with a high degree of autonomy. 
+
+AliECS uses FairMQ, part of ALFA \cite{ref_alfa}, which is the common $O^2$ transport layer for physics data.   
+Apache Mesos~\cite{ref_mesos} is a cluster resource management system, which facilitates the management of O2/FLP components, resources and tasks inside the O2/FLP facility, 
+eﬀectively enabling the developer to program against the datacenter (i.e., the O2/FLP facility at LHC Point 2) as if it was a single pool of resources. 
+
+AliECS interfaces with Consul~\cite{ref_consul}, a key-value store which acts as the system’s conﬁguration repository. The design also includes interfacing with information sources from the LHC, 
+the trigger system, and the DCS. Once acquired by the AliECS core, conﬁguration information is processed into an in-memory hierarchical key-value store, and from there it is
+fed into a template system in order to generate task deployment and conﬁguration structures.
+
+Most components of AliECS are written in Go~\cite{ref_go}, a statically typed general purpose programming language in the tradition of C, which is particularly suitable for distributed system development because of its advanced synchronization and threading facilities.
 
 \begin{figure}[!h]
 \centering
