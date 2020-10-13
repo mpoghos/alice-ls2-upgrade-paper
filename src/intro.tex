@@ -20,19 +20,9 @@ The central barrel detector system is designed for efficient trakcing in the hig
 The forward muon detectors cover the rapidity range $2.5 < \eta < 4.0$ (tbc) and use a system of absobers to remove hadrons and idensify muons.
 The background of secondary muons from pion and kaon decays in the muon system is small at high pt, thanks to the so-called 'muon plug' absorber, which is placed at $z = xx$ cm from the interaction point.
 
-\begin{itemize}
-\item overview of the detector
-  (status as of end of Run 2)
-\item barrel tracking
-\item detectors for particle identification
-\item calorimetry
-\item forward physics
-\item triggering
-\end{itemize}
+\subsection{Tracking}
 
-\subsection{Tracking performance}
-
-The ALICE detector system is designed for high-efficiency tracking with excellent two-track separation in high-multiplicity events. The efficient tracking extends down to low $\pt \approx 100$ MeV/$c$ (todo: check canonical value) which is important to access the kinematic range where thermal production from the QGP plays a role and to reconstruct weak and strong decays.
+The ALICE detector system is designed for high-efficiency tracking with excellent two-track separation in high-multiplicity events. The efficient tracking extends down to low $\pt \approx \SI{100}{\mega\eV\per\clight}$ (todo: check canonical value) which is important to access the kinematic range where thermal production from the QGP plays a role and to reconstruct weak and strong decays.
 Similarly, the two-track resolution is important for decay reconstruction, as well as correlation measurements that reveal the space-time structure of particle production ('femtoscopy') and probe interactions between hadrons as well as jet structure measurements.
 
 Give some key performance numbers: momentum resolution and impact parameter resolution...
@@ -43,6 +33,33 @@ Give some key performance numbers: momentum resolution and impact parameter reso
 \caption{Detector setup in Run 2}
 \label{fig:alice_run2}
 \end{figure}
+
+\begin{figure}
+\centering
+\caption{tracking efficiency}
+\label{fig:trk_eff}
+\end{figure}
+
+\begin{figure}
+\centering
+\caption{tracking \pt resolution}
+\label{fig:trk_res}
+\end{figure}
+
+\subsection{Calorimetry}
+
+\subsection{Particle identification}
+
+\begin{figure}
+\centering
+\includegraphics[width=.7\textwidth]{intro/2018-Jul-23-TPC_dEdx_2T_151003_color}
+\caption{TPC dE/dx}
+\label{fig:tpc_dedx}
+\end{figure}
+
+\subsection{Event characterization and selection}
+
+\subsection{Forward spectrometer}
 
 \subsection*{Run1/2 performance highlights (examples)}
 
@@ -59,24 +76,33 @@ Data was recorded throughout the
 running of the LHC in Run 1 and 2 exploiting a variety of collision systems and
 energies, see Tab.~\ref{tab:datasets}.
 
+\begin{figure}
+\centering
+\includegraphics[width=.45\textwidth]{intro/2019-01-17-2019-01-17-lumi_Run2_pp13TeV}
+\includegraphics[width=.45\textwidth]{intro/2019-01-17-2019-01-17-stat_Run2_PbPb}
+\caption{integrated lumi}
+\label{fig:lumi_run2}
+\end{figure}
+
 \begin{table}
   \centering
-  \begin{tabular}{lrr}
+  \begin{tabular}{lrrr}
     \multicolumn{1}{c}{system}
     & \multicolumn{1}{c}{$\snn~(\mathrm{\TeV})$}
-    & \multicolumn{1}{c}{$L_\mathrm{int}$}\\
+    & \multicolumn{1}{c}{$L_\mathrm{MB}$}
+    & \multicolumn{1}{c}{$L_\mathrm{insp}$}\\
     \hline \hline
-    \pp & 0.9 & $\sim 200~\mu\mathrm{b}^{-1}$\\
-        & 2.76 & $\sim 100~\mathrm{nb}^{-1}$\\
-        & 5.02 & $\sim 1.3~\mathrm{pb}^{-1}$\\
-        & 7 & $\sim 1.5~\mathrm{pb}^{-1}$\\
-        & 8 & $\sim 2.5~\mathrm{pb}^{-1}$\\
-        & 13 & $\sim 25~\mathrm{pb}^{-1}$\\
-    \pPb{} & 5.02 & $\sim 15 + 3~\mathrm{nb}^{-1}$\\
-           & 8.16 & $\sim 25~\mathrm{nb}^{-1}$\\
-    \XeXe{} & 5.44 & $\sim 0.3~\mu\mathrm{b}^{-1}$\\
-    \PbPb{} & 2.76 & $\sim 75~\mu\mathrm{b}^{-1}$\\
-            & 5.02 & $\sim 0.25 + 1~\mathrm{nb}^{-1}$\\
+    \pp & 0.9 & & $\sim \SI{200}{\micro \barn^{-1}}$\\
+        & 2.76 & & $\sim 100~\mathrm{nb}^{-1}$\\
+        & 5.02 & & $\sim 1.3~\mathrm{pb}^{-1}$\\
+        & 7 & & $\sim 1.5~\mathrm{pb}^{-1}$\\
+        & 8 & & $\sim 2.5~\mathrm{pb}^{-1}$\\
+        & 13 & & $\sim 25~\mathrm{pb}^{-1}$\\
+    \pPb{} & 5.02 & & $\sim 15 + 3~\mathrm{nb}^{-1}$\\
+           & 8.16 & & $\sim 25~\mathrm{nb}^{-1}$\\
+    \XeXe{} & 5.44 & & $\sim 0.3~\mu\mathrm{b}^{-1}$\\
+    \PbPb{} & 2.76 & & $\sim 75~\mu\mathrm{b}^{-1}$\\
+            & 5.02 & & $\sim 0.25 + 1~\mathrm{nb}^{-1}$\\
     \hline
   \end{tabular}
   \caption{ALICE datasets from LHC Run 1 and 2}
