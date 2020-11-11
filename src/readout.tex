@@ -1,10 +1,10 @@
 \section{Read-out and data processing (20p.)}
-In this section we give an overview of data processing from the detector read-out to the creation of analysis object data (see Fig. \ref{fig:02dp})
+In this section we give an overview of data processing from the detector read-out to the creation of analysis object data (see Fig. \ref{fig:o2dp})
 and then
 focus on the processing steps that are synchronous with data taking.
 The continuous read-out of the large majority of the detectors without rejecting 
 events, is one of the most important changes with respect to Runs~1+2. As explained in 
-detail in section \ref{physics_motivation}, it allows to 
+detail in section \ref{sec:physics_motivation}, it allows to 
 record the maximum statistics for physics signals for which dedicated triggering is 
 not feasible. At the projected peak Pb--Pb interaction rate of 50~kHz the data throughput from the detectors is expected to be {\color{blue} 3.75~TB/s}, approximately a factor of 50 higher than during Run 2.
 
@@ -18,7 +18,7 @@ addition to the compute
 nodes it provides networking, data storage as well as interfaces with the Grid and the
 permanent data
 store at the Tier~0. For more technical details on these clusters, see sections
-\ref{sec:flp} and \ref{sec: epn}.
+\ref{sec:flp} and \ref{sec:epn}.
 
 The upgraded online system supports both continuous and triggered read-out. Not
 all sub-systems will be capable of reading the full event rate. These detectors will
@@ -151,7 +151,7 @@ all barrel tracking. The reconstruction code is written using generic C++ code a
 GPU hardware. This opens the possibility to run reconstruction efficiently on heterogeneous
 computing platforms that will become available on the GRID:
 
-\subsubsection{\bf CPU Processing}
+\subsubsection{CPU Processing}
 Synchronous data processing on CPUs is performed in parallel on about 30 cores.
 For the ITS and the muon spectrometer system (MFT, MCH, MID) processing starts with space point reconstruction
 (clustering). For the barrel calorimeters EMCAL and PHOS, the cell
@@ -192,10 +192,16 @@ reconstruction takes place, and the CCDB will be updated.
 The final processing step consists in compressing all data stored in the CTF using the rANS algorithm, a variant of
 Asymmetric Numeral System coders, which allows to reach the entropy limit.
 \subsection{CTP (David; 3p.)}
+\input{ctp}
+
 \subsection{CRU (Tivadar, Alex; 3 p.)}
+
 \subsection{FLP (Pierre; 3p.)}
+\label{sec:flp}
 \input{o2_flp}
+
 \subsection{EPN (Volker; 3p.)}
+\label{sec:epn}
 
 The EPN data center is designed to perform a first online data reconstruction pass, extract detector calibration objects, and reduce the data volume to a reasonable size in order to fit into the available storage space. 
 The compression algorithms rely on data reconstruction properties, and the subsequent asynchronous reconstruction passes rely on the calibration objects.
