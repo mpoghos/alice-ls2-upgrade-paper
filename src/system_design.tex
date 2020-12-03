@@ -1,0 +1,50 @@
+
+
+
+\subsection{System design - ALICE read-out architecture}
+
+As a consequence of the increase of the Pb--Pb interaction rate to 50 kHz in average 5 TPC drift time periods ($\approx 100\; \mu s$) are overlapping at any given moment. That means that the TPC permanently will contain useful data which requires continuous, trigger-less read-out. In addition, the Pb--Pb event topology would only allow adaptation of the actual data throughput to the available read-out data bandwidth as it has been done in run 1 and 2 and not a selection based on event topology. The ALICE read-out system upgrade overcomes this limit by increasing the read-out bandwidth and registering all interactions without event selection by providing a trigger-less and continuous read-out mode. Nevertheless, the ALICE read-out system features dedicated trigger detectors which are read out in continuous mode to facilitate reconstruction and commissioning. Upgraded Trigger detectors are the fast interaction trigger (FIT) indicating the presence and centrality of an interaction, the zero degree calorimeter (ZDC) providing information @ and the time of flight detector (TOF) serving as cosmic ray trigger for commissioning purposes. 
+
+In addition to the nominal continuous read-out mode, all upgraded detector systems support triggered read-out mode. In this mode only data from selected interactions are being retained by the read-out electronics. Triggered read-out mode allows adaptation of the ALICE read-out data throughput during commissioning or dedicated calibrations runs where the data bandwidth exceeds nominal conditions.
+
+The upgraded ALICE detector features a number of legacy detectors (CPV, EMCAL, PHOS, TRD) which are not read out in in continuous mode but will need a hardware trigger signal provided by the FIT detector to indicate when an interaction took place. The read-out data of these detectors are merged with the read-out data from the continuously read out detectors. 
+
+Some of the detectors (EMCAL, PHOS) provide a hardware trigger signal. The trigger outputs of all trigger detectors (FIT, ZDC, EMCAL, PHOS) are fed into the central trigger system (CTS) for the afore mentioned commissioning and calibration runs but also for dedicated special runs using the EMCAL and PHOS triggers.
+
+In order to synchronise the continuous data stream in all read-out branches and also to give the continuous data a structure for reconstruction the read-out stream is divided in so-called time frames (TF) of programmable length with a nominal duration of 11 ms. Each TF is divided in heart beat frames (HBF) with a length corresponding to an LHC orbit of $\approx 89.4\; \mu s$. Fig. \ref{fig_ro:tf_hbf_structure} shows an illustration of this structure. In continuous mode all detector data are forwarded, whereas in triggered mode only data from interactions with a positive trigger signal are retained. In both cases the data are formatted in HBFs.
+
+Fig. \ref{fig_ro:ro_architecture}  shows the ALICE read-out system and its three detector read-out groups \cite{TDR, run34note}. In the first group which contains all upgraded detectors with the exception of CPV, ITS and MFT, the central trigger system (CTS) receives the machine clock and trigger inputs signals in the central trigger processor (CTP) and fan-outs out the signals via the local trigger units (LTU) to the common read-out units (CRU) using bi-directional TTC-PON links. The CRUs are standardised PCIe and FPGA based optical I/O processor modules (see section \ref{sec:flp}) which forward the timing and trigger information to the front-end electronics on bi-directional optical GBT links \cite{ro:GBT} initiating the detector read-out. The detector data are sent to the CRUs  from where the HBF data are shipped via the PCIe interface to the first level processors (FLP) in the O2 farm. The FLPs prepares the Sub-Time Frames (STF) merging all HBFs of one TF of the connected detectors and ships them to the event processing nodes (EPN). There the STFs of all sub-detectors are merged into a TF. 
+
+The second group contains the CPV, the ITS and MFT detectors which fully support the upgraded continuous read-out strategy and is identical to the first group, with the exception that the front-end requires a trigger signal indicating the presence of an interaction with short latency of 1.6 us. As the propagation delay from the CTS in the cavern via the CRU on surface back to the front-end electronics in the cavern would be too long, a parallel and shorter timing and trigger signal path using the GBT protocol is established directly from the CTS to the ITS/MFT front-ends. 
+
+The third group contains legacy detectors which are not upgraded and are read out via legacy read-out cards C-RORC  \cite{ro:CRORC} located in FLPs. They receive the clock and trigger signals via the legacy TTC system \cite{ro:TTC}. Table \ref{table_ro:datathroughput} shows a summary of the data throughputs and ? for each detector (should that information be added to Pierres table?).
+
+The CTS controls the read-out of the sub-detectors and provides in addition to the clock the heart beat (HB) triggers to the CRU and the connected front-end electronics. The HB triggers define whether the interactions contained in a given HBF are supposed to be registered (HB accept, HBa) or whether the data from the corresponding HBF should be deleted (HB reject, HBr) in the CRU. The CRUs in turn give information to the CTS whether a given HBF has been successfully transported to the FLP or whether HBF data packets are missing or a buffer overflow occurred (HB acknowledge, HBack). 
+For each HBF the CTS evaluates and summarises all HBack messages from all CRUs into the  HBF decision message. The HBF decision messages is sent via the CRU to the FLP indicating whether a given HBF is considered useful for data storage or whether it should be deleted. This data flow control signal scheme is illustrated in fig. \ref{fig_ro:control_signals} and allows an adaptation of the data throughput in the read-out system to the available bandwidth during commissioning or optimisation of detector read-out parameters. In nominal conditions, the system allows immediate monitoring of the read-out components and immediate reaction.
+
+\begin{figure*}[hbtp]
+  \begin{center}
+    \includegraphics[width=1.\textwidth]{../fig/cru/tf_hbf_structure.jpg}
+  \end{center}
+  \caption{TF and HBF structure: additional info will be added here@}
+  \label{fig_ro:tf_hbf_structure}
+\end{figure*}
+
+\begin{figure*}[hbtp]
+  \begin{center}
+    \includegraphics[width=1.\textwidth]{../fig/cru/ro_architecture.jpg}
+  \end{center}
+  \caption{ALICE read-out architecture: additional info will be added here@, add FLP and EPN farm}
+  \label{fig_ro:ro_architecture}
+\end{figure*}
+
+\begin{figure*}[hbtp]
+  \begin{center}
+    \includegraphics[width=1.\textwidth]{../fig/cru/control_signals.jpg}
+  \end{center}
+  \caption{ALICE Control signals: additional info will be added here@ or the figure will be removed}
+  \label{fig_ro:control_signals}
+\end{figure*}
+
+
+
