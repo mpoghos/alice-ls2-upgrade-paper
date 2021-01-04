@@ -1,1 +1,74 @@
-\subsection{EMCal (Constantin; 2 p.)}
+\subsection{Electromagnetic Calorimeter}
+%
+\subsubsection{The detector and tower readout}
+The EMCal is a shashlik-type lead-scintillator sampling calorimeter comprising 4416 individual modules that are grouped into 
+twenty Super Modules (SM). Each of the modules is composed by 4 optically isolated towers, resulting to 17664 individual towers in total.  
+The optical readout of each tower is provided using wavelength shifting fibers coupled to an Avalanche Photo Diode (APD). \\
+%
+The front face dimensions of the towers are ~6$\times$6 cm$^{2}$ resulting in individual tower acceptance of $\Delta  \eta \times \Delta  \varphi \simeq 0.0143 \times 0.0143$ at $\eta = 0$. The towers are arranged within the SMs such that each tower is approximately 
+projective in $\eta$ and $\varphi$  to the interaction vertex. The towers are operated at $\sim25^{o}$C ambient temperature with a nominal APD gain of $\simeq$30, allowing to achieve a 14-bit effective dynamic energy range from $\sim$16 MeV to $\sim$250 GeV per tower. \\
+%
+The overall design of the calorimeter is heavily influenced by its integration within the ALICE~\cite{Aamodt:2008zz} setup and SM of 3 different sizes are used: full-, 2/3- and 1/3- size. 
+Each full-size SM is assembled from $12\times24= 288$ modules arranged in 24 strip modules of $21\times1$ modules each. Each 2/3-size SM is assembled from $12\times16=192$ modules, and 
+each one-third size SM is assembled from $4\times24=96$ modules.\\
+The EMCal is made of 10 full-size SMs and 2 1/3-size SMs covering $|\eta|<0.7$ in pseudo-rapidity  and $80^{\circ} < \varphi < 187^{\circ}$ in azimuth.  
+DCal is made of 6 2/3-size SM and 2 1/3-size SMs with acceptance:  $0.22 < |\eta| < 0.7, 260^{\circ} < \varphi < 320^{\circ} $ and $|\eta| < 0.7, 320^{\circ} < \varphi < 327^{\circ}$. \\
+%
+The EMCal and the DCal are placed in two independent regions in azimuth, as illustrated in Figure~\ref{fig:alice_run2}. The SMs are located at $R\simeq 4.3$ m in radial distance from the beamline, inserted into support frames situated between the Time-of-Flight  detector and the ALICE L3 magnet. The weight of a single full-size SM is $\simeq$ 7.7 tons, and the total weight of all 20 SMs is $\simeq$ 120 tons. 
+More details regarding the mechanical structure and Front-End Electronics can be found in references~\cite{Cortese:2008zza, Allen:2010stl}\\
+%
+An individual EMCal tower is read out with an avalanche photodiode and preamplifier mounted on the tower. The preamplifier signal is split into energy and trigger shaper channels on the Front End Electronics (FEE)~\cite{Muller:2006jr} boards. The energy shaper signals are sampled at 10 MHz with 10-bit resolution using the ALTRO 
+chips~\cite{EsteveBosch:2003bj}. Prior to digitisation, each energy signal is split into a High Gain (HG) and Low Gain (LG) channel, each shaped separately, with a gain ratio of 16 to provide an effective dynamic range of 14 bit. Each FEE board provides read-out of 32 towers (HG and LG).\\
+%
+The LG channel data is used in the offline analysis only when the associated HG channel is saturated. The concept of the LG read-out suppression algorithm is to check the HG signals in real time in the FEE FPGA and then omit the ALTRO read-out of the associated LG channel if the HG signal is not saturated. For low energy signals, the HG channel information is sufficient. The EMCal offline analysis experience shows that it is very rare that the LG channels are needed. Therefore, the LG suppression read-out algorithm saves read-out time by eliminating entirely the read-out of nearly half of the read-out channels. 
+%
+\subsubsection{The read-out system}
+Each SM is equipped with a read-out concentrator, the so called Scalable Read-out Unit (SRU)~\cite{Zhang:2014ioa}, which reads out the FEE boards concurrently.
+The SRU interconnects with each FEE board through a custom daughter card which was designed for the EMCal FEE board. It provides interface compatibility between the SRU and the EMCal FEE board to provide the Data, Trigger, Clock, and Control (DTC) links. 
+The maximum bandwidth of a DTC link on the SRU is 2 Gbps. In the EMCal application, the bandwidth of the DTC link is conservatively limited to 20 MB/s due to the hardware capability of the rather outdated FEE FPGA (Altera ACEX 1K Family EP1k100QC208-3). However, the DTC link does not limit the EMCal data throughput.\\
+%
+Each SRU has 40 point-to-point links for the 40 (37 FEE + 3 TRU) boards for the full size EMCal SMs and the data are sent to DAQ in two partitions (through two DDLs). 
+The SRU board integrates a TTCrx (LHC Trigger, Timing, and Control receiver)~\cite{Christiansen:1996dg} which can receive trigger and timing information from the ALICE Trigger system. It also has three SFP+ ports directly connected to the FPGA’s high speed serial transceivers for serial data transport at up to 5 Gbps. One additional SFP+ port provides a 10 GbE link. For the EMCal application, one of these transceivers is used for the Ethernet connection to the ALICE DCS system, the other two transceivers are used for the two DDL links to the ALICE DAQ system. The functionalities of the DCS and SIU boards are implemented in the FPGA firmware of the SRU.\\
+%
+The firmware of SRU is already upgraded according to the Run3 trigger and DAQ protocols~\cite{Antonioli:2013ppp}. In addition, the readout rate is increased
+and currently $\simeq$28 $\mu$sec readout time is achieved for minimum bias PbPb collisions, which is close to the designed value~\cite{Zhang:2014ioa}.
+%
+\subsubsection{Trigger} 
+Both EMCal and DCal  provide inputs to the L0 and L1 trigger decisions in ALICE. The trigger subsystem resides in specific hardware boards.
+The signals of $2\times2$ groups of adjacent towers are analog summed in the FEE boards and transmitted to a local Trigger Region Unit (TRU) board where the 
+$2\times2$ tower sums from 12 FEE cards (96, $2\times2$ sums) are digitized at the LHC clock frequency of 40 MHz \cite{Kral:2012ae}. 
+The digitized $2\times2$ tower sums are summed over time samples 
+with pre-sample pedestal subtraction to provide an integral energy measurement, referred to as timesums. 
+Finally, overlapping $4\times4$ tower digital sums are formed within each TRU and a peak finding algorithm is used to find a signal peak.  
+Each $4\times4$ sum signal peak amplitude is then compared against a threshold to provide a L0 trigger output that indicates the presence of a high energy shower in the TRU region (1 TRU covers 1/3 of the area for a full-size SM). 
+The L0 trigger decision from each TRU is passed to a STU which performs the logical OR of the L0 outputs from all TRUs to provide a single L0 input to the ALICE CTP.\\
+%
+Upon receipt of an accepted L0 trigger from the CTP, the digitized time-summed $2\times2$ tower sums from each TRU are passed to the STU. In the STU the $4\times4$ overlapping tower sums are 
+formed again, but across TRU boundaries over the full acceptance to provide an improved L1 high energy shower trigger referred to as gamma trigger \cite{Bourrion:2012vn}. 
+At the same time, tower sums over a large $8\times8$ trigger channel window ($16\times16$ towers) and a
+ $16\times16$ trigger channel window ($32\times32$ towers)  are also formed to provide an L1 jet trigger. Both L1 triggers allow to define two thresholds for the event selection, referred to as high and low threshold.\\
+%
+In order to reduce the bias due to multiplicity fluctuations in heavy-ion collisions, there is a direct  communication between  EMCal and DCal STUs for considering the underlying event background in the online L1 trigger decision.
+For EMCal, the background is estimated  based on the median of the energies deposited in  $8\times8$ trigger channel ($16\times16$ towers) windows in DCal, and vice versa.
+The background is subtracted from the signal amplitude and then compared against a threshold to provide L1 triggers.\\ 
+%
+The Calorimeter remains as a trigger detector during Run3 and during the future operations both EMCal and DCal will continue
+providing L0, L1-gamma and L1-jet triggers. The firmware of STU is already upgraded according to the Run3 trigger and DAQ protocols~\cite{Antonioli:2013ppp}. 
+The readout time highly depends on the data size to be sent from STU to DAQ. It is $\sim$50 $\mu$sec in case of sending the data from all trigger channels needed for the full QC.  However, for physics analysis only the channels contributing in the trigger decision are relevant and the data will be filtered out by the STU FPGA resulting to 
+$\sim$~20~$\mu$s read-out time. During the normal operation for physics data taking only $\lesssim 1 \%$ of events will be taken by recording the data from all channels, and the 
+average readout time is expected to be close to 20 $\mu$s.
+%
+\subsubsection{Spare production}
+For a smooth operation through Run3, new FEE boards are produced identical to the ones used during Run1/2. 
+It accounts 15$\%$ of units used in the experimental cavern: 100 FECs and 6 TRUs. Also, 2 STUs are produced as spares for EMCal and DCal.
+%
+\subsubsection{DCS}
+The online configuration and monitoring of the FEE will be performed through 22 DIM~\cite{Gaspar:1994ooj} servers (20 for SRUs and 2 for STUs) running on the DCS Linux node interfaced with the WinCC Open Architecture (OA) platform . 
+The temperature sensors and the power supplies will be monitored and controlled using the standard tools provided by the JCOP framework. 
+
+\subsubsection{Calibration}
+
+\subsubsection{Quality Control}
+
+
+
